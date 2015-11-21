@@ -107,6 +107,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
     private static final String ENABLE_ADB = "enable_adb";
     private static final String CLEAR_ADB_KEYS = "clear_adb_keys";
     private static final String ADB_TCPIP  = "adb_over_network";
+    private static final String ADB_NOTIFY = "adb_notify";
     private static final String ENABLE_TERMINAL = "enable_terminal";
     private static final String KEEP_SCREEN_ON = "keep_screen_on";
     private static final String BT_HCI_SNOOP_LOG = "bt_hci_snoop_log";
@@ -200,6 +201,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
 
     private SwitchPreference mEnableAdb;
     private Preference mClearAdbKeys;
+    private SwitchPreference mAdbNotify;
     private SwitchPreference mEnableTerminal;
     private Preference mBugreport;
     private SwitchPreference mBugreportInPower;
@@ -309,6 +311,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
             }
         }
         mAllPrefs.add(mClearAdbKeys);
+        mAdbNotify = findAndInitSwitchPref(ADB_NOTIFY);
         mEnableTerminal = findAndInitSwitchPref(ENABLE_TERMINAL);
         if (!isPackageInstalled(getActivity(), TERMINAL_APP_PACKAGE)) {
             debugDebuggingCategory.removePreference(mEnableTerminal);
@@ -334,6 +337,7 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         if (!android.os.Process.myUserHandle().equals(UserHandle.OWNER)) {
             disableForUser(mEnableAdb);
             disableForUser(mClearAdbKeys);
+            disableForUser(mAdbNotify);
             disableForUser(mEnableTerminal);
             disableForUser(mPassword);
         }
@@ -553,6 +557,8 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
         mHaveDebugSettings = false;
         updateSwitchPreference(mEnableAdb, Settings.Global.getInt(cr,
                 Settings.Global.ADB_ENABLED, 0) != 0);
+        updateSwitchPreference(mAdbNotify, Settings.Secure.getInt(cr,
+                Settings.Secure.ADB_NOTIFY, 1) != 0);
         if (mEnableTerminal != null) {
             updateSwitchPreference(mEnableTerminal,
                     context.getPackageManager().getApplicationEnabledSetting(TERMINAL_APP_PACKAGE)
@@ -1621,6 +1627,10 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                         .setPositiveButton(android.R.string.ok, this)
                         .setNegativeButton(android.R.string.cancel, null)
                         .show();
+        } else if (preference == mAdbNotify) {
+            Settings.Secure.putInt(getActivity().getContentResolver(),
+                    Settings.Secure.ADB_NOTIFY,
+                    mAdbNotify.isChecked() ? 1 : 0);
         } else if (preference == mEnableTerminal) {
             final PackageManager pm = getActivity().getPackageManager();
             pm.setApplicationEnabledSetting(TERMINAL_APP_PACKAGE,
@@ -1802,6 +1812,9 @@ public class DevelopmentSettings extends SettingsPreferenceFragment
                 mDialogClicked = true;
                 Settings.Global.putInt(getActivity().getContentResolver(),
                         Settings.Global.ADB_ENABLED, 1);
+                Settings.Secure.putInt(getActivity().getContentResolver(),
+                        Settings.Secure.ADB_NOTIFY, 1);
+                mAdbNotify.setChecked(true);
                 mVerifyAppsOverUsb.setEnabled(true);
                 updateVerifyAppsOverUsbOptions();
                 updateBugreportOptions();

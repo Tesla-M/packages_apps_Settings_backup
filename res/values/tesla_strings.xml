@@ -32,4 +32,7 @@
     <string name="uber_flags">Build Flags</string>
     <string name="uber_flags_default">None</string>
 
+    <!-- BitSyko Layers  -->
+    <string name="bitsyko_layers">Layers</string>
+
 </resources>

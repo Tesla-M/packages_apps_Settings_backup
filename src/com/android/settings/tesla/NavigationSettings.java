@@ -10,6 +10,8 @@ import android.provider.Settings;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 
+import com.android.internal.logging.MetricsLogger;
+
 public class NavigationSettings extends SettingsPreferenceFragment implements
         OnPreferenceChangeListener {
 

@@ -72,6 +72,10 @@
 	    <Preference
 	        android:title="Alex Couderc (Alx31)"
 	            android:summary="Sony Xperia maintainer" />
+	            
+	    <Preference
+	        android:title="Filip A (slebit)"
+	            android:summary="Flounder/ Grouper/ Clark/ V500 maintainer" />
 	            	            
 	    </PreferenceCategory>       
 </PreferenceScreen>
